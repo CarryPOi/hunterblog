@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 当代码推送到主分支时触发（如果你的主分支叫 master，请把 main 改为 master）
+  push:
+    branches:
+      - main
+      - master
+
+  # 允许在 GitHub Actions 页面手动触发
+  workflow_dispatch:
+
+# 设置 GitHub 令牌权限，允许上传到 Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 限制并发运行，避免冲突
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # 构建阶段
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # 部署阶段
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

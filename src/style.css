@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --theme-hue: 260;
+  --primary-color: hsl(var(--theme-hue), 70%, 45%);
+  --wave-color: 235, 239, 245; /* 新增水波纹颜色变量 */
+  --bg-color: rgb(235, 239, 245);
+  --text-color: #333;
+  --text-secondary: #666;
+  --glass-bg: rgb(251, 255, 255); /* 默认非透明模式的模块色 */
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --title-color: var(--primary-color);
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --nav-text: #333;
+  --nav-hover: var(--primary-color);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme='dark'] {
+  --primary-color: hsl(var(--theme-hue), 80%, 60%);
+  --wave-color: 13, 10, 5;
+  --bg-color: #0d0a05;
+  --text-color: #e8d5a3;
+  --text-secondary: rgba(232, 213, 163, 0.7);
+  --glass-bg: rgba(25, 25, 25, 0.95); /* 暗色模式也使用实体色 */
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --title-color: var(--primary-color);
+  --nav-bg: rgba(255, 255, 255, 0.1);
+  --nav-text: #e8d5a3;
+  --nav-hover: var(--primary-color);
+  --card-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 壁纸模式样式 */
+body.mode-full { overflow-x: hidden; }
+body.mode-full .page-content { 
+  margin-top: 142.86vh; /* 补偿 zoom 0.7 */
+  position: relative; 
+  z-index: 20; 
+  background: var(--bg-color); /* 现在是 rgb(235, 239, 245) */
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.05); /* 浅色模式下阴影也调淡 */
+  transition: margin-top 0.4s ease, background-color 0.4s ease;
+}
+body.mode-banner .bg-fullscreen { height: 530px; width: 100%; object-fit: cover; position: absolute; }
+body.mode-banner .page-content { 
+  margin-top: 550px; 
+  transition: margin-top 0.4s ease; 
+  background: var(--bg-color);
+}
+body.mode-pure { background-color: var(--bg-color) !important; }
+body.mode-pure .bg-fullscreen { display: none !important; }
+body.mode-pure .page-content { margin-top: 80px; transition: margin-top 0.4s ease; background: transparent; }
+/* 只有透明模式下才是透明玻璃 */
+body.mode-transparent .glass {
+  background: rgba(255, 255, 255, 0.12) !important; 
+  backdrop-filter: blur(12px) !important; 
+  border-color: rgba(255, 255, 255, 0.2) !important; 
+}
+
+/* 顶边栏始终保持半透明效果，不随模块颜色改变 */
+.topbar {
+  background: var(--nav-bg) !important;
+  backdrop-filter: blur(12px) !important;
+}
+body.mode-transparent .page-content { margin-top: 80px; transition: margin-top 0.4s ease; background: transparent; }
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  overflow-x: hidden;
+  zoom: 0.7;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* 全屏背景 */
+.bg-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 142.86vw; /* 补偿 zoom 0.7 */
+  height: 142.86vh; /* 补偿 zoom 0.7 */
+  background: url('@/assets/image/背景.png') center/cover no-repeat;
+  z-index: -1;
+  transition: height 0.4s ease, position 0.4s ease, opacity 0.4s ease;
+}
+
